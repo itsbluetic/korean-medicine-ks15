@@ -17,7 +17,7 @@ KS-15 표준을 기반으로 한 **의료급 체질 진단 시스템**입니다.
 
 ## 🌐 라이브 데모
 
-**⚕️ [KS-15 의료급 진단 시작하기](https://korean-medicine-ks15.vercel.app)**
+**⚕️ [KS-15 의료급 진단 시작하기](https://korean-medicine-ks15-fano0a06d-sangwan-ans-projects.vercel.app)**
 
 ## ✨ 주요 기능
 
