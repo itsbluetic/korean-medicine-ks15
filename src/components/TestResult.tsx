@@ -1,9 +1,34 @@
-import { LegacyTestResult as TestResultType } from "@/types";
-import { getLegacyConstitutionInfo } from "@/data/constitutions";
-import { getConfidenceMessage, getScoreDistribution } from "@/lib/diagnosis";
+import { TestResult as TestResultType } from "@/types";
+import { getConstitutionInfo } from "@/data/constitutions";
 import { useTestHistory } from "@/hooks/useTestHistory";
 import ShareButton from "./ShareButton";
 import { useEffect, useState } from "react";
+
+// KS-15 전용 헬퍼 함수들
+function getConfidenceMessage(confidence: number): string {
+  if (confidence >= 80) {
+    return "매우 높은 신뢰도의 결과입니다.";
+  } else if (confidence >= 70) {
+    return "높은 신뢰도의 결과입니다.";
+  } else if (confidence >= 60) {
+    return "보통 신뢰도의 결과입니다.";
+  } else if (confidence >= 50) {
+    return "낮은 신뢰도의 결과입니다. 재검사를 권장합니다.";
+  } else {
+    return "매우 낮은 신뢰도의 결과입니다. 재검사가 필요합니다.";
+  }
+}
+
+function getScoreDistribution(scores: Record<string, number> | any): { [key: string]: number } {
+  const total = Object.values(scores).reduce((sum: number, score: number) => sum + score, 0);
+  if (total === 0) return scores;
+
+  const distribution: { [key: string]: number } = {};
+  Object.entries(scores).forEach(([key, value]) => {
+    distribution[key] = Math.round((value / total) * 100);
+  });
+  return distribution;
+}
 
 interface TestResultProps {
   result: TestResultType;
@@ -18,7 +43,7 @@ const constitutionNames: Record<string, string> = {
 };
 
 export default function TestResult({ result, onRetakeTest }: TestResultProps) {
-  const constitutionInfo = getLegacyConstitutionInfo(result.constitution);
+  const constitutionInfo = getConstitutionInfo(result.constitution);
   const confidenceMessage = getConfidenceMessage(result.confidence);
   const scoreDistribution = getScoreDistribution(result.scores);
   const { saveResult } = useTestHistory();
